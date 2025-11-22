@@ -1,0 +1,419 @@
+// Import variables first
+@import 'variables';
+
+// Then import Bootstrap
+@import 'bootstrap/scss/bootstrap';
+
+// Custom styles
+:root {
+  --dietarysense-primary: #{$primary};
+  --dietarysense-secondary: #{$secondary};
+  --dietarysense-accent: #{$dietarysense-accent};
+  --dietarysense-light: #{$dietarysense-light};
+}
+
+// Global styles
+body {
+  font-family: $font-family-base;
+  background-color: #f8f9fa;
+  line-height: $line-height-base;
+}
+
+// Custom navbar
+.dietarysense-navbar {
+  background: $gradient-primary !important;
+  box-shadow: $box-shadow-sm;
+  
+  .navbar-brand {
+    font-weight: 800;
+    font-size: 1.5rem;
+    
+    &:hover {
+      transform: scale(1.05);
+      transition: $transition-base;
+    }
+  }
+  
+  .nav-link {
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: $border-radius-sm;
+    transition: $transition-base;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      transform: translateY(-1px);
+    }
+    
+    &.active {
+      background-color: rgba(255, 255, 255, 0.2);
+      font-weight: 600;
+    }
+  }
+}
+
+// Custom cards
+.meal-card,
+.recipe-card {
+  transition: $transition-base;
+  border: none;
+  overflow: hidden;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: $box-shadow-lg !important;
+  }
+  
+  .card-img-top {
+    transition: transform 0.3s ease;
+  }
+  
+  &:hover .card-img-top {
+    transform: scale(1.05);
+  }
+}
+
+// Progress indicators
+.calorie-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: conic-gradient($primary 0% var(--percentage), $light 0% 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin: 0 auto;
+}
+
+.progress-tracker {
+  background: $gradient-primary;
+  border-radius: $border-radius;
+}
+
+// Nutrition badges
+.nutrition-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: $border-radius-sm;
+  
+  &.calories {
+    background-color: $primary;
+    color: white;
+  }
+  
+  &.protein {
+    background-color: $nutrition-protein;
+    color: white;
+  }
+  
+  &.carbs {
+    background-color: $nutrition-carbs;
+    color: white;
+  }
+  
+  &.fats {
+    background-color: $nutrition-fats;
+    color: white;
+  }
+}
+
+// Custom buttons
+.btn-dietarysense {
+  background: $gradient-primary;
+  border: none;
+  color: white;
+  font-weight: $btn-font-weight;
+  padding: 0.75rem 1.5rem;
+  border-radius: $btn-border-radius;
+  transition: $transition-base;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(44, 85, 48, 0.3);
+    color: white;
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.btn-outline-dietarysense {
+  border: 2px solid $primary;
+  color: $primary;
+  font-weight: $btn-font-weight;
+  background: transparent;
+  transition: $transition-base;
+  
+  &:hover {
+    background: $primary;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(44, 85, 48, 0.3);
+  }
+}
+
+// Dashboard stats
+.stat-card {
+  transition: $transition-base;
+  border: none;
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: $box-shadow;
+  }
+  
+  .stat-icon {
+    font-size: 2rem;
+    margin-bottom: map-get($spacers, 3);
+  }
+  
+  .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: map-get($spacers, 2);
+  }
+  
+  .stat-label {
+    color: $gray-600;
+    font-weight: 500;
+  }
+}
+
+// Recipe cards
+.recipe-image-container {
+  height: 200px;
+  overflow: hidden;
+  position: relative;
+  
+  .recipe-image {
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  
+  .recipe-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.7));
+    display: flex;
+    align-items: flex-end;
+    padding: $spacer;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  &:hover .recipe-overlay {
+    opacity: 1;
+  }
+  
+  &:hover .recipe-image {
+    transform: scale(1.1);
+  }
+}
+
+// Meal plan styles
+.meal-plan-day {
+  border-left: 4px solid $primary;
+  background: $dietarysense-light;
+  
+  &.active {
+    border-left-color: $success;
+    background: lighten($success, 45%);
+  }
+}
+
+.meal-time-badge {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: $border-radius-sm;
+  
+  &.breakfast {
+    background-color: lighten($warning, 35%);
+    color: darken($warning, 30%);
+  }
+  
+  &.lunch {
+    background-color: lighten($success, 35%);
+    color: darken($success, 30%);
+  }
+  
+  &.dinner {
+    background-color: lighten($primary, 35%);
+    color: darken($primary, 30%);
+  }
+  
+  &.snack {
+    background-color: lighten($info, 35%);
+    color: darken($info, 30%);
+  }
+}
+
+// Grocery list styles
+.grocery-category {
+  border-left: 4px solid;
+  
+  &.produce {
+    border-left-color: $success;
+  }
+  
+  &.dairy {
+    border-left-color: $info;
+  }
+  
+  &.meat {
+    border-left-color: $danger;
+  }
+  
+  &.grains {
+    border-left-color: $warning;
+  }
+  
+  &.pantry {
+    border-left-color: $secondary;
+  }
+}
+
+.grocery-item {
+  transition: $transition-base;
+  
+  &.purchased {
+    background-color: $light;
+    
+    .grocery-item-name {
+      text-decoration: line-through;
+      color: $gray-500;
+    }
+  }
+  
+  &:hover:not(.purchased) {
+    background-color: rgba($primary, 0.05);
+  }
+}
+
+// Admin styles
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: $spacer;
+}
+
+.analytics-chart {
+  background: white;
+  border-radius: $border-radius;
+  padding: map-get($spacers, 4);
+  box-shadow: $box-shadow-sm;
+}
+
+// Loading animations
+.loading-spinner {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid rgba($primary, 0.3);
+  border-radius: 50%;
+  border-top-color: $primary;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.skeleton-loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: map-get($grid-breakpoints, md)) {
+  .dietarysense-navbar {
+    .navbar-nav {
+      text-align: center;
+    }
+    
+    .nav-link {
+      margin: 0.25rem 0;
+    }
+  }
+  
+  .stat-card {
+    margin-bottom: $spacer;
+  }
+  
+  .calorie-circle {
+    width: 100px;
+    height: 100px;
+    font-size: 1.25rem;
+  }
+}
+
+// Print styles
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .card {
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+  }
+}
+
+// Utility classes
+.text-dietarysense {
+  color: $primary !important;
+}
+
+.bg-dietarysense {
+  background: $gradient-primary !important;
+}
+
+.border-dietarysense {
+  border-color: $primary !important;
+}
+
+// Focus styles for accessibility
+.btn:focus,
+.form-control:focus,
+.form-select:focus {
+  border-color: $primary;
+  box-shadow: 0 0 0 0.2rem rgba(44, 85, 48, 0.25);
+}
+
+// Custom scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $primary;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: darken($primary, 10%);
+}
