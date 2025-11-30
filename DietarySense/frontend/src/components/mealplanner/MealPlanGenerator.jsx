@@ -45,6 +45,58 @@ const MealPlanGenerator = () => {
     "Soy",
   ];
 
+  // Mock data for testing
+  const mockMealPlanData = {
+    id: "mock-plan-1",
+    duration: 7,
+    startDate: new Date().toISOString().split('T')[0],
+    meals: [
+      {
+        day: "Monday",
+        date: new Date().toISOString().split('T')[0],
+        meals: {
+          breakfast: {
+            name: "Oatmeal with Berries",
+            calories: 350,
+            protein: 12,
+            carbs: 60,
+            fats: 8,
+            prepTime: 10,
+            cookTime: 5,
+            ingredients: ["oats", "mixed berries", "almond milk", "honey"]
+          },
+          lunch: {
+            name: "Quinoa Salad",
+            calories: 450,
+            protein: 15,
+            carbs: 55,
+            fats: 18,
+            prepTime: 15,
+            cookTime: 0,
+            ingredients: ["quinoa", "cherry tomatoes", "cucumber", "feta cheese", "olive oil"]
+          },
+          dinner: {
+            name: "Grilled Chicken with Vegetables",
+            calories: 550,
+            protein: 35,
+            carbs: 40,
+            fats: 22,
+            prepTime: 20,
+            cookTime: 25,
+            ingredients: ["chicken breast", "bell peppers", "broccoli", "olive oil", "garlic"]
+          }
+        }
+      }
+      // ... more days can be added here
+    ],
+    nutritionSummary: {
+      totalCalories: 2450,
+      totalProtein: 125,
+      totalCarbs: 280,
+      totalFats: 98
+    }
+  };
+
   useEffect(() => {
     if (user?.profile) {
       setPreferences((prev) => ({
@@ -77,17 +129,36 @@ const MealPlanGenerator = () => {
       return;
     }
 
+    // Check if user is authenticated
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("Please log in again.");
+      return;
+    }
+
     setLoading(true);
     setError("");
 
+    // For testing - comment this out when backend is ready
+    console.log("Using mock data for testing");
+    setTimeout(() => {
+      setGeneratedPlan(mockMealPlanData);
+      setShowGeneratedPlan(true);
+      setLoading(false);
+    }, 1500);
+    return;
+    // End of mock data - remove the above lines when backend is ready
+
     try {
+      console.log("Sending request to backend with preferences:", preferences);
+
       const response = await fetch(
         "http://localhost:5000/api/mealplans/generate",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             duration: preferences.duration,
@@ -102,15 +173,21 @@ const MealPlanGenerator = () => {
         }
       );
 
+      console.log("Response status:", response.status);
+
       if (!response.ok) {
-        throw new Error("Failed to generate meal plan");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Server error: ${response.status}`);
       }
 
       const data = await response.json();
+      console.log("Received data:", data);
+
       setGeneratedPlan(data.data);
       setShowGeneratedPlan(true);
     } catch (err) {
-      setError(err.message || "Failed to generate meal plan");
+      console.error("Meal plan generation error:", err);
+      setError(err.message || "Failed to generate meal plan. Please check if the server is running.");
     } finally {
       setLoading(false);
     }
@@ -121,21 +198,24 @@ const MealPlanGenerator = () => {
 
     setLoading(true);
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch("http://localhost:5000/api/mealplans", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(generatedPlan),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to save meal plan");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to save meal plan");
       }
 
       alert("Meal plan saved successfully!");
     } catch (err) {
+      console.error("Save meal plan error:", err);
       setError(err.message || "Failed to save meal plan");
     } finally {
       setLoading(false);
@@ -397,10 +477,16 @@ const MealPlanGenerator = () => {
 
                 {!user?.profile?.dailyCalories && (
                   <Alert variant="warning" className="mt-3">
-                    Please complete your profile with calorie targets to
-                    generate a meal plan.
+                    Please complete your profile with calorie targets to generate a meal plan.
                   </Alert>
                 )}
+
+                {/* Debug info - remove in production */}
+                <div className="mt-3">
+                  <small className="text-muted">
+                    Debug: Using mock data for testing. Check console for details.
+                  </small>
+                </div>
               </div>
             </Card.Body>
           </Card>

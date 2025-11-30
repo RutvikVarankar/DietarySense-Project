@@ -43,28 +43,94 @@ const RecipeBrowser = () => {
     setError("");
 
     try {
-      const queryParams = new URLSearchParams({
-        page: pagination.page,
-        limit: pagination.limit,
-        ...filters,
-        dietaryTags: filters.dietaryTags.join(","),
-      });
+      // Map local filters to Spoonacular API parameters
+      const spoonacularParams = new URLSearchParams();
+
+      // Search query
+      if (filters.search) {
+        spoonacularParams.append("search", filters.search);
+      }
+
+      // Number of results (use pagination limit)
+      spoonacularParams.append("number", pagination.limit.toString());
+
+      // Map dietary tags to Spoonacular diet parameter
+      // Spoonacular supports: vegetarian, vegan, gluten-free, dairy-free, etc.
+      const dietMapping = {
+        vegetarian: "vegetarian",
+        vegan: "vegan",
+        "gluten-free": "gluten-free",
+        "dairy-free": "dairy-free",
+        "low-carb": "low-carb",
+        "high-protein": "high-protein"
+      };
+
+      const validDiets = filters.dietaryTags
+        .map(tag => dietMapping[tag])
+        .filter(Boolean);
+
+      if (validDiets.length > 0) {
+        spoonacularParams.append("diet", validDiets.join(","));
+      }
+
+      // Map intolerances (nut-free maps to tree-nut-free)
+      const intoleranceMapping = {
+        "nut-free": "tree-nut-free"
+      };
+
+      const validIntolerances = filters.dietaryTags
+        .map(tag => intoleranceMapping[tag])
+        .filter(Boolean);
+
+      if (validIntolerances.length > 0) {
+        spoonacularParams.append("intolerances", validIntolerances.join(","));
+      }
+
+      // Combine prep and cook time for maxReadyTime
+      const maxTime = Math.max(
+        parseInt(filters.maxPrepTime) || 0,
+        parseInt(filters.maxCookTime) || 0
+      );
+
+      if (maxTime > 0) {
+        spoonacularParams.append("maxReadyTime", maxTime.toString());
+      }
+
+      // Cuisine mapping (if any dietary tags match cuisine)
+      const cuisineMapping = {
+        // Add cuisine mappings if needed
+      };
+
+      const validCuisines = filters.dietaryTags
+        .map(tag => cuisineMapping[tag])
+        .filter(Boolean);
+
+      if (validCuisines.length > 0) {
+        spoonacularParams.append("cuisine", validCuisines.join(","));
+      }
 
       const response = await fetch(
-        `http://localhost:5000/api/recipes?${queryParams}`
+        `http://localhost:5000/api/spoonacular/recipes?${spoonacularParams}`
       );
 
       if (!response.ok) {
-        throw new Error("Failed to fetch recipes");
+        throw new Error("Failed to fetch recipes from Spoonacular API");
       }
 
       const data = await response.json();
-      setRecipes(data.data);
-      setPagination((prev) => ({
-        ...prev,
-        total: data.total,
-        pages: data.pages,
-      }));
+
+      if (data.success) {
+        setRecipes(data.data);
+        // Spoonacular doesn't provide total count/pagination info in the same way
+        // We'll use the returned count and assume single page for now
+        setPagination((prev) => ({
+          ...prev,
+          total: data.count,
+          pages: 1, // Spoonacular API doesn't support pagination in the same way
+        }));
+      } else {
+        throw new Error(data.message || "Failed to fetch recipes");
+      }
     } catch (err) {
       setError(err.message);
     } finally {

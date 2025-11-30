@@ -6,8 +6,17 @@ const RecipeCard = ({ recipe }) => {
   const [imageError, setImageError] = useState(false);
   const navigate = useNavigate();
 
+  // Handle both local DB recipes (_id) and Spoonacular recipes (id)
+  const recipeId = recipe._id || recipe.id;
+  const isSpoonacularRecipe = !recipe._id && recipe.id;
+
   const handleCardClick = () => {
-    navigate(`/recipes/${recipe._id}`);
+    // For Spoonacular recipes, navigate to a different route or handle differently
+    if (isSpoonacularRecipe) {
+      navigate(`/recipes/spoonacular/${recipeId}`);
+    } else {
+      navigate(`/recipes/${recipeId}`);
+    }
   };
 
   const getDifficultyColor = (difficulty) => {
@@ -133,7 +142,7 @@ const RecipeCard = ({ recipe }) => {
         </Card.Title>
 
         {/* Description */}
-        {recipe.description && (
+        {(recipe.description || recipe.summary) && (
           <Card.Text
             className="text-muted small mb-2"
             style={{
@@ -143,13 +152,13 @@ const RecipeCard = ({ recipe }) => {
               overflow: "hidden",
             }}
           >
-            {recipe.description}
+            {recipe.description || recipe.summary?.replace(/<[^>]*>/g, '')}
           </Card.Text>
         )}
 
-        {/* Dietary Tags */}
+        {/* Dietary Tags - Handle both local and Spoonacular formats */}
         <div className="mb-3">
-          {recipe.dietaryTags?.slice(0, 3).map((tag) => (
+          {(recipe.dietaryTags || recipe.diets)?.slice(0, 3).map((tag) => (
             <Badge
               key={tag}
               bg={getDietaryTagColor(tag)}
@@ -162,56 +171,56 @@ const RecipeCard = ({ recipe }) => {
               {tag}
             </Badge>
           ))}
-          {recipe.dietaryTags?.length > 3 && (
+          {((recipe.dietaryTags || recipe.diets)?.length > 3) && (
             <Badge
               bg="outline-secondary"
               text="dark"
               style={{ fontSize: "0.65rem" }}
             >
-              +{recipe.dietaryTags.length - 3}
+              +{(recipe.dietaryTags || recipe.diets).length - 3}
             </Badge>
           )}
         </div>
 
-        {/* Recipe Meta Information */}
+        {/* Recipe Meta Information - Handle both local and Spoonacular formats */}
         <Row className="text-center small text-muted mb-3">
           <Col xs={4}>
             <div className="fw-bold text-primary">
-              {recipe.nutrition.calories}
+              {recipe.nutrition?.calories || recipe.calories || 'N/A'}
             </div>
             <div>cal</div>
           </Col>
           <Col xs={4}>
-            <div className="fw-bold">{formatTime(recipe.prepTime)}</div>
+            <div className="fw-bold">{formatTime(recipe.prepTime || recipe.preparationMinutes || recipe.readyInMinutes)}</div>
             <div>prep</div>
           </Col>
           <Col xs={4}>
-            <div className="fw-bold">{formatTime(recipe.cookTime)}</div>
+            <div className="fw-bold">{formatTime(recipe.cookTime || recipe.cookingMinutes || recipe.readyInMinutes)}</div>
             <div>cook</div>
           </Col>
         </Row>
 
-        {/* Nutrition Info */}
+        {/* Nutrition Info - Handle both local and Spoonacular formats */}
         <div className="bg-light rounded p-2 mb-3">
           <Row className="text-center small">
             <Col xs={3}>
               <div className="fw-bold text-success">
-                {recipe.nutrition.protein}g
+                {recipe.nutrition?.protein || 'N/A'}g
               </div>
               <div className="text-muted">protein</div>
             </Col>
             <Col xs={3}>
-              <div className="fw-bold text-info">{recipe.nutrition.carbs}g</div>
+              <div className="fw-bold text-info">{recipe.nutrition?.carbs || 'N/A'}g</div>
               <div className="text-muted">carbs</div>
             </Col>
             <Col xs={3}>
               <div className="fw-bold text-warning">
-                {recipe.nutrition.fats}g
+                {recipe.nutrition?.fats || 'N/A'}g
               </div>
               <div className="text-muted">fats</div>
             </Col>
             <Col xs={3}>
-              <div className="fw-bold text-secondary">{recipe.servings}</div>
+              <div className="fw-bold text-secondary">{recipe.servings || recipe.servings || 'N/A'}</div>
               <div className="text-muted">servings</div>
             </Col>
           </Row>

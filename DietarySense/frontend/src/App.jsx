@@ -19,6 +19,7 @@ import RecipeBrowser from "./components/recipes/RecipeBrowser";
 import RecipeDetail from "./components/recipes/RecipeDetail";
 import MealPlanGenerator from "./components/mealplanner/MealPlanGenerator";
 import GroceryList from "./components/grocery/GroceryList";
+import Profile from "./pages/Profile";
 
 // Admin Components
 import AdminDashboard from "./components/admin/AdminDashboard";
@@ -127,6 +128,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <GroceryList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
               </ProtectedRoute>
             }
           />

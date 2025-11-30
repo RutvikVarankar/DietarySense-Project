@@ -16,6 +16,7 @@ export const routePaths = {
   RECIPE_DETAIL: "/recipes/:id",
   MEAL_PLANNER: "/meal-planner",
   GROCERY_LIST: "/grocery-list",
+  PROFILE: "/profile",
 
   // Admin routes
   ADMIN: "/admin",

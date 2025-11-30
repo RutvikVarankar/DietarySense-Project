@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Container,
   Row,
@@ -15,6 +16,7 @@ import ProgressCharts from "./ProgressCharts";
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [todaysMeals, setTodaysMeals] = useState([]);
   const [nutritionProgress, setNutritionProgress] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -337,19 +339,19 @@ const Dashboard = () => {
             </Card.Header>
             <Card.Body>
               <div className="d-grid gap-2">
-                <Button variant="primary">
+                <Button variant="primary" onClick={() => navigate('/meal-planner')}>
                   <i className="fas fa-plus me-2"></i>
                   Generate Meal Plan
                 </Button>
-                <Button variant="outline-success">
+                <Button variant="outline-success" onClick={() => navigate('/recipes')}>
                   <i className="fas fa-book me-2"></i>
                   Browse Recipes
                 </Button>
-                <Button variant="outline-info">
+                <Button variant="outline-info" onClick={() => navigate('/grocery-list')}>
                   <i className="fas fa-shopping-cart me-2"></i>
                   View Grocery List
                 </Button>
-                <Button variant="outline-warning">
+                <Button variant="outline-warning" onClick={() => navigate('/profile')}>
                   <i className="fas fa-user me-2"></i>
                   Update Profile
                 </Button>

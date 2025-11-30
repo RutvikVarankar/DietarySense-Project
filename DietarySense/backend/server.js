@@ -28,6 +28,7 @@ const userRoutes = require("./routes/userRoutes");
 const recipeRoutes = require("./routes/recipeRoutes");
 const mealPlanRoutes = require("./routes/mealPlanRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const spoonacularRoutes = require('./routes/spoonacularRoutes');
 
 // Initialize express app
 const app = express();
@@ -63,6 +64,7 @@ app.use(
     limit: process.env.MAX_FILE_UPLOAD_SIZE || "5mb",
   })
 );
+
 app.use(cookieParser());
 
 // Data sanitization against NoSQL query injection
@@ -164,6 +166,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/recipes", recipeRoutes);
 app.use("/api/mealplans", mealPlanRoutes);
 app.use("/api/admin", adminRoutes);
+app.use('/api/spoonacular', spoonacularRoutes);
 
 // Handle undefined routes
 app.all("*", notFound);
@@ -187,9 +190,8 @@ const server = app.listen(PORT, () => {
       .magenta
   );
   console.log(
-    `🗄️  Database: ${
-      mongoose.connection.readyState === 1 ? "Connected ✅" : "Disconnected ❌"
-    }`.blue
+    `🗄️  Database: ${mongoose.connection.readyState === 1 ? "Connected ✅" : "Disconnected ❌"
+      }`.blue
   );
   console.log(`🔐  JWT Expire: ${process.env.JWT_EXPIRE || "30d"}`.green);
   console.log("=".repeat(60).cyan);
