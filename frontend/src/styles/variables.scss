@@ -1,0 +1,131 @@
+// DietarySense Color Palette
+$primary: #2c5530;
+$secondary: #4a7c59;
+$success: #28a745;
+$info: #17a2b8;
+$warning: #ffc107;
+$danger: #dc3545;
+$light: #f8f9fa;
+$dark: #343a40;
+
+// Theme colors
+$dietarysense-primary: #2c5530;
+$dietarysense-secondary: #4a7c59;
+$dietarysense-accent: #8fb996;
+$dietarysense-light: #f8fff8;
+$dietarysense-dark: #1a3c23;
+
+// Additional colors
+$nutrition-protein: #28a745;
+$nutrition-carbs: #17a2b8;
+$nutrition-fats: #ffc107;
+$nutrition-fiber: #6f42c1;
+
+// Gradients
+$gradient-primary: linear-gradient(135deg, $primary 0%, $secondary 100%);
+$gradient-success: linear-gradient(135deg, $success 0%, #20c997 100%);
+$gradient-warning: linear-gradient(135deg, $warning 0%, #fd7e14 100%);
+
+// Spacing
+$spacer: 1rem;
+$spacers: (
+  0: 0,
+  1: $spacer * 0.25,
+  2: $spacer * 0.5,
+  3: $spacer,
+  4: $spacer * 1.5,
+  5: $spacer * 3,
+  6: $spacer * 4,
+  7: $spacer * 5,
+  8: $spacer * 6
+);
+
+// Typography
+$font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+$font-size-base: 1rem;
+$line-height-base: 1.6;
+
+// Border radius
+$border-radius: 0.5rem;
+$border-radius-sm: 0.375rem;
+$border-radius-lg: 0.75rem;
+
+// Shadows
+$box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+$box-shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+$box-shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+
+// Breakpoints
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px
+);
+
+// Container max widths
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px,
+  xxl: 1320px
+);
+
+// Z-index
+$zindex-dropdown: 1000;
+$zindex-sticky: 1020;
+$zindex-fixed: 1030;
+$zindex-modal-backdrop: 1040;
+$zindex-modal: 1050;
+$zindex-popover: 1060;
+$zindex-tooltip: 1070;
+
+// Transitions
+$transition-base: all 0.3s ease;
+$transition-fade: opacity 0.15s linear;
+$transition-collapse: height 0.35s ease;
+
+// Card
+$card-border-width: 0;
+$card-box-shadow: $box-shadow;
+$card-cap-bg: transparent;
+
+// Button
+$btn-font-weight: 600;
+$btn-border-radius: $border-radius;
+$btn-border-radius-sm: $border-radius-sm;
+$btn-border-radius-lg: $border-radius-lg;
+
+// Form
+$input-border-radius: $border-radius;
+$input-border-radius-sm: $border-radius-sm;
+$input-border-radius-lg: $border-radius-lg;
+
+// Alert
+$alert-border-radius: $border-radius;
+
+// Badge
+$badge-border-radius: $border-radius-sm;
+$badge-font-weight: 600;
+
+// Progress
+$progress-border-radius: $border-radius;
+$progress-height: 0.75rem;
+
+// Table
+$table-cell-padding-y: 1rem;
+$table-cell-padding-x: 1rem;
+
+// Custom CSS variables for JavaScript access
+:root {
+  --dietarysense-primary: #{$primary};
+  --dietarysense-secondary: #{$secondary};
+  --dietarysense-accent: #{$dietarysense-accent};
+  --dietarysense-light: #{$dietarysense-light};
+  --nutrition-protein: #{$nutrition-protein};
+  --nutrition-carbs: #{$nutrition-carbs};
+  --nutrition-fats: #{$nutrition-fats};
+}
