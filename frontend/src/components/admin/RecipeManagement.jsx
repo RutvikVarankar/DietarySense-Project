@@ -47,7 +47,7 @@ const RecipeManagement = () => {
     servings: 1,
     difficulty: "easy",
     cuisine: "",
-    image: "",
+    image: null, // Changed to null for file
     tags: [],
   });
   const [addRecipeLoading, setAddRecipeLoading] = useState(false);
@@ -231,7 +231,7 @@ const RecipeManagement = () => {
       ...prev,
       instructions: [
         ...prev.instructions,
-        { step: nextStep, text: ""},
+        { step: nextStep, text: "" },
       ],
     }));
   };
@@ -283,13 +283,16 @@ const RecipeManagement = () => {
     setAddRecipeError("");
 
     try {
+      // Create recipe data without image for JSON submission
+      const { image, ...recipeData } = newRecipe;
+
       const response = await fetch("http://localhost:5000/api/recipes", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify(newRecipe),
+        body: JSON.stringify(recipeData),
       });
 
       if (!response.ok) {
@@ -298,9 +301,35 @@ const RecipeManagement = () => {
       }
 
       const data = await response.json();
+      const createdRecipe = data.data;
+
+      // If image was provided, upload it separately
+      if (image) {
+        const formData = new FormData();
+        formData.append("image", image);
+
+        const imageResponse = await fetch(
+          `http://localhost:5000/api/recipes/${createdRecipe._id}/image`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: formData,
+          }
+        );
+
+        if (!imageResponse.ok) {
+          console.warn("Recipe created but image upload failed");
+        } else {
+          // Update the recipe with the image URL
+          const imageData = await imageResponse.json();
+          createdRecipe.image = imageData.imageUrl;
+        }
+      }
 
       // Add the new recipe to the list
-      setRecipes((prev) => [data.data, ...prev]);
+      setRecipes((prev) => [createdRecipe, ...prev]);
 
       // Reset form and close modal
       setNewRecipe({
@@ -323,7 +352,7 @@ const RecipeManagement = () => {
         servings: 1,
         difficulty: "easy",
         cuisine: "",
-        image: "",
+        image: null,
         tags: [],
       });
       setShowAddRecipeModal(false);
@@ -615,8 +644,8 @@ const RecipeManagement = () => {
               modalAction === "approve"
                 ? "success"
                 : modalAction === "reject"
-                ? "warning"
-                : "danger"
+                  ? "warning"
+                  : "danger"
             }
             onClick={confirmRecipeAction}
             disabled={modalAction === "reject" && !rejectionReason.trim()}
@@ -723,17 +752,20 @@ const RecipeManagement = () => {
               </Col>
               <Col md={6}>
                 <Form.Group>
-                  <Form.Label>Image URL</Form.Label>
+                  <Form.Label>Recipe Image</Form.Label>
                   <Form.Control
-                    type="url"
-                    value={newRecipe.image}
+                    type="file"
+                    accept="image/*"
                     onChange={(e) =>
                       setNewRecipe((prev) => ({
                         ...prev,
-                        image: e.target.value,
+                        image: e.target.files[0],
                       }))
                     }
                   />
+                  <Form.Text className="text-muted">
+                    Upload a recipe image (optional)
+                  </Form.Text>
                 </Form.Group>
               </Col>
             </Row>
